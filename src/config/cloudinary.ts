@@ -16,10 +16,10 @@ export const cloudinaryUploadImg = async (fileToUploads: string) => {
 					url: result!.secure_url,
 					asset_id: result!.asset_id,
 					public_id: result!.public_id,
-				},
-				{
-					resource_type: "auto",
 				}
+				// {
+				// 	resource_type: "auto",
+				// }
 			);
 		});
 	});
@@ -32,10 +32,10 @@ export const cloudinaryDeleteImg = async (fileToDelete: string) => {
 					url: result.secure_url,
 					asset_id: result.asset_id,
 					public_id: result.public_id,
-				},
-				{
-					resource_type: "auto",
 				}
+				// {
+				// 	resource_type: "auto",
+				// }
 			);
 		});
 	});

@@ -10,7 +10,6 @@ import {
 	sendOTP,
 	verifyOTP,
 } from "../controllers/userController";
-import passport from "passport";
 import { auth, retrictsTo } from "../middlewares/auth";
 import schemaValidator from "../middlewares/schemaValidator";
 const router = express.Router();

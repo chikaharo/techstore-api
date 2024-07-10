@@ -1,7 +1,6 @@
 import mongoose from "mongoose"; // Erase if already required
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
-import PassportLocalMongoose from "passport-local-mongoose";
 
 const userSchema = new mongoose.Schema(
 	{

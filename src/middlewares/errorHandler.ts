@@ -3,7 +3,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../helpers/AppError";
 
-export const notFound = (req: Request, res: Response, next: NextFunction) => {
+export const notFound = (req: Request, _res: Response, next: NextFunction) => {
 	const error = new AppError(
 		`Not Found : ${req.originalUrl}`,
 		404,
@@ -41,7 +41,7 @@ const sendErrorProd = (err: AppError, res: Response) => {
 
 export const errorHandler = (
 	err: AppError,
-	req: Request,
+	__dirnamereq: Request,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -49,8 +49,6 @@ export const errorHandler = (
 	if (!err.isOperational) {
 		next(err);
 	}
-
-	err.httpCode = err.httpCode || 500;
 
 	res.status(err.httpCode);
 	if (process.env.NODE_ENV === "development") {
@@ -74,14 +72,14 @@ export function logErrorMiddleware(
 	next(err);
 }
 
-export function returnError(
-	err: Error,
-	_req: Request,
-	res: Response,
-	_next: NextFunction
-) {
-	res.status(err.statusCode || 500).send(err.message);
-}
+// export function returnError(
+// 	err: Error,
+// 	_req: Request,
+// 	res: Response,
+// 	_next: NextFunction
+// ) {
+// 	res.status(err.statusCode || 500).send(err.message);
+// }
 
 export function isOperationalError(error: Error) {
 	if (error instanceof AppError) {

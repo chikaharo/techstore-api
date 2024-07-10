@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { uploadImages } from "../controllers/uploadController";
 import { productImgResize, uploadPhoto } from "../middlewares/uploadImage";
 import { auth, retrictsTo } from "../middlewares/auth";
@@ -12,7 +12,7 @@ router.post(
 	uploadPhoto.array("images", 10),
 	uploadImages
 );
-router.get("/", (req, res) => {
+router.get("/", (_req: Request, res: Response) => {
 	res.json({ message: "upload route ok" });
 });
 

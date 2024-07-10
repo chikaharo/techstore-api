@@ -9,6 +9,7 @@ export const sortObject = (obj: Object) => {
 	}
 	str.sort();
 	for (key = 0; key < str.length; key++) {
+		// @ts-ignore
 		sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
 	}
 	return sorted;

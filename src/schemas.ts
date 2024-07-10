@@ -66,6 +66,11 @@ const productUpdate = Joi.object().keys({
 	images: Joi.array(),
 	tags: Joi.string().valid("Special", "Popular", "Featured"),
 });
+const orderCreate = Joi.object().keys({
+	name: Joi.string().required(),
+	phone: Joi.string().required(),
+	address: Joi.string().required(),
+});
 
 export default {
 	"/user/login": userLogin,
@@ -79,4 +84,5 @@ export default {
 	"/color/update": colorUpdate,
 	"/product/create": productCreate,
 	"/product/update": productUpdate,
+	"/order/create": orderCreate,
 } as { [key: string]: ObjectSchema };

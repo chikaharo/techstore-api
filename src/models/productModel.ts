@@ -83,7 +83,7 @@ productSchema.pre("save", async function (next) {
 	next();
 });
 
-productSchema.post("save", async function (doc) {
+productSchema.post("save", async function (_doc) {
 	if (this.isModified("images") && this.images.length > 0) {
 		await this.updateOne({ thumbnail: this.images[0].url });
 	}

@@ -35,7 +35,7 @@ const schemaValidator = (path: string, useJoiError = true): RequestHandler => {
 		throw new Error(`Schema not found for path: ${path}`);
 	}
 
-	return (req, res, next) => {
+	return (req, _res, next) => {
 		const method = req.method.toLowerCase();
 
 		if (!supportedMethods.includes(method)) {
@@ -64,7 +64,7 @@ const schemaValidator = (path: string, useJoiError = true): RequestHandler => {
 			// return res.status(422).json(useJoiError ? joiError : customError);
 			return next(
 				new AppError(
-					useJoiError ? joiError.error.details.message : customError.error,
+					useJoiError ? joiError.error.details[0].message : customError.error,
 					400,
 					"Validate Error",
 					true
