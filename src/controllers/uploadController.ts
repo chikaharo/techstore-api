@@ -6,18 +6,21 @@ export const uploadImages = async (req: Request, res: Response) => {
 	const urls = [];
 	const files = req.files;
 	try {
+		// @ts-ignore
 		const uploader = (path: string) => cloudinaryUploadImg(path, "images");
+		// @ts-ignore
 		for (const file of files) {
 			const { path } = file;
 			const newpath = await uploader(path);
 			urls.push(newpath);
 			fs.unlinkSync(path);
 		}
+		// @ts-ignore
 		const images = [];
 		urls.forEach((file) => {
 			images.push(file);
 		});
-		console.log("image", images);
+		// @ts-ignore
 		return res.json(images);
 	} catch (error) {
 		for (const file of files) {

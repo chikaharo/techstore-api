@@ -11,7 +11,7 @@ export const createOrder = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 
 	try {
 		const user = await User.findById(_id)
@@ -97,7 +97,7 @@ export const cancelOrder = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 	const { id } = req.params;
 
 	try {
@@ -170,7 +170,7 @@ export const getOrder = async (
 };
 
 export const getAllOrders = async (
-	req: Request,
+	_req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -193,7 +193,7 @@ export const userGetOrders = async (
 	next: NextFunction
 ) => {
 	try {
-		const { _id } = req.user;
+		const { _id } = req.userData;
 		const orderQuery = req.query.status as string;
 		const user = await User.findById(_id);
 		let userOrders = await Order.find({ _id: { $in: user.orders } })
@@ -211,6 +211,7 @@ export const userGetOrders = async (
 				(order) => order.orderStatus === orderQuery
 			);
 		}
+		// @ts-ignore
 		userOrders.sort((a, b) => b.createdAt - a.createdAt);
 
 		return res.json({

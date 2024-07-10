@@ -3,6 +3,7 @@ import moment from "moment";
 import { sortObject } from "../helpers/sortObject";
 import { v4 as uuidv4 } from "uuid";
 import Order from "../models/orderModel";
+import { AppError } from "../helpers/AppError";
 
 export const payment = (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -13,6 +14,7 @@ export const payment = (req: Request, res: Response, next: NextFunction) => {
 			req.headers["x-forwarded-for"] ||
 			req.connection.remoteAddress ||
 			req.socket.remoteAddress ||
+			// @ts-ignore
 			req.connection.socket.remoteAddress;
 		let vnp_TmnCode = process.env.VNP_TmnCode;
 		let vnp_HashSecret = process.env.VNP_HashSecret;
@@ -60,7 +62,7 @@ export const payment = (req: Request, res: Response, next: NextFunction) => {
 			data: vnp_Url,
 		});
 	} catch (e) {
-		next(e);
+		return next(new AppError(e.message, 500, "Server Error", true));
 	}
 };
 

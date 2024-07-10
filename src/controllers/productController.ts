@@ -200,7 +200,7 @@ export const getAllProduct = async (
 		// Sorting
 
 		if (req.query.sort) {
-			const sortBy = req.query.sort.split(",").join(" ");
+			const sortBy = (req.query.sort as string).split(",").join(" ");
 			query = query.sort(sortBy);
 		} else {
 			query = query.sort("-createdAt");
@@ -209,7 +209,7 @@ export const getAllProduct = async (
 		// limiting the fields
 
 		if (req.query.fields) {
-			const fields = req.query.fields.split(",").join(" ");
+			const fields = (req.query.fields as string).split(",").join(" ");
 			query = query.select(fields);
 		} else {
 			query = query.select("-__v");
@@ -219,6 +219,7 @@ export const getAllProduct = async (
 
 		const page = req.query.page;
 		const limit = req.query.limit ? Number(req.query.limit) : 10;
+		// @ts-ignore
 		const skip = (page - 1) * limit;
 		query = query.skip(skip).limit(limit);
 		let productCount;
@@ -242,7 +243,7 @@ export const addToWishlist = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 	const { prodId } = req.body;
 	try {
 		const user = await User.findById(_id);
@@ -284,11 +285,12 @@ export const rating = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 	const { star, prodId, comment } = req.body;
 	try {
 		const product = await Product.findById(prodId);
 		let alreadyRated = product.ratings.find(
+			// @ts-ignore
 			(userId) => userId.postedby.toString() === _id.toString()
 		);
 		if (alreadyRated) {
@@ -323,7 +325,9 @@ export const rating = async (
 		const getallratings = await Product.findById(prodId);
 		let totalRating = getallratings.ratings.length;
 		let ratingsum = getallratings.ratings
+			// @ts-ignore
 			.map((item) => item.star)
+			// @ts-ignore
 			.reduce((prev, curr) => prev + curr, 0);
 		let actualRating = Math.round(ratingsum / totalRating);
 		let finalproduct = await Product.findByIdAndUpdate(

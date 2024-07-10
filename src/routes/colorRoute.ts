@@ -20,7 +20,13 @@ router.post(
 	schemaValidator("/color/create"),
 	createColor
 );
-router.put("/:id", schemaValidator("/color/update"), updateColor);
-router.delete("/:id", deleteColor);
+router.put(
+	"/:id",
+	auth,
+	retrictsTo(["admin"]),
+	schemaValidator("/color/update"),
+	updateColor
+);
+router.delete("/:id", auth, retrictsTo(["admin"]), deleteColor);
 
 export default router;

@@ -81,7 +81,7 @@ export const getColor = async (
 };
 
 export const getallColor = async (
-	req: Request,
+	_req: Request,
 	res: Response,
 	next: NextFunction
 ) => {

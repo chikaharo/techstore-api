@@ -32,11 +32,11 @@ export const createUser = async (
 		// newUser.otp = otp;
 		newUser.otp = 1768;
 		await newUser.save();
-		const data = {
+		const data: NodemailerData = {
 			to: email,
 			text: `Hey User here is your OTP ${otp}`,
 			subject: "Sent OTP",
-			htm: "<h1>Hey User here is your OTP</h1>" + otp,
+			html: "<h1>Hey User here is your OTP</h1>" + otp,
 		};
 		sendEmail(data);
 		return res.json({
@@ -65,11 +65,11 @@ export const sendOTP = async (
 		// user.otp = otp;
 		user.otp = 1768;
 		await user.save();
-		const data = {
+		const data: NodemailerData = {
 			to: email,
 			text: `Hey User here is your OTP ${otp}`,
 			subject: "Sent OTP",
-			htm: "<h1>Hey User here is your OTP</h1>" + otp,
+			html: "<h1>Hey User here is your OTP</h1>" + otp,
 		};
 		sendEmail(data);
 		return res
@@ -103,14 +103,7 @@ export const verifyOTP = async (
 		});
 	} catch (error) {
 		console.error(error);
-		next(
-			new AppError(
-				"An error occurred during OTP verification",
-				400,
-				"Verify Failed",
-				true
-			)
-		);
+		return next(new AppError(error.message, 400, "Server Error", true));
 	}
 };
 
@@ -124,6 +117,7 @@ export const login = async (req: Request, res: Response) => {
 	// if (role !== findUser.role) {
 	// 	return res.status(404).json(`Not Authorised, Please login as ${role}`);
 	// }
+	// @ts-ignore
 	const validPassword = await findUser.isPasswordMatched(password);
 	if (!validPassword) {
 		return res.status(404).json("Password is not correct");
@@ -158,14 +152,11 @@ export const login = async (req: Request, res: Response) => {
 		maxAge: 72 * 60 * 60 * 1000,
 	});
 
-	console.log({ refreshToken });
-
 	return res.json({
 		user: {
 			_id: findUser?._id,
 			name: findUser?.name,
 			email: findUser?.email,
-			mobile: findUser?.mobile,
 			role: findUser?.role,
 		},
 		accessToken: accessToken,
@@ -208,7 +199,7 @@ export const logout = async (
 };
 
 export const getallUser = async (
-	req: Request,
+	_req: Request,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -230,7 +221,7 @@ export const getMe = async (
 	next: NextFunction
 ) => {
 	try {
-		const { _id } = req.user;
+		const { _id } = req.userData;
 		const user = await User.findById(_id);
 		if (!user) {
 			return next(new AppError("User not found", 404, "Not Found", true));
@@ -247,7 +238,7 @@ export const changePassword = async (
 	next: NextFunction
 ) => {
 	try {
-		const { _id } = req.user;
+		const { _id } = req.userData;
 		const { password } = req.body;
 		const user = await User.findById(_id);
 		if (!user) {
@@ -270,7 +261,7 @@ export const getWishlist = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 
 	try {
 		const user = await User.findById(_id).populate({

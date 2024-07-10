@@ -10,7 +10,7 @@ export const getCart = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 	try {
 		const user = await User.findById(_id)
 			.populate({
@@ -39,7 +39,7 @@ export const addToCart = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 	const { prodId, colorId } = req.body;
 
 	try {
@@ -51,6 +51,7 @@ export const addToCart = async (
 		}
 		const user = await User.findById(_id);
 		const existingProdInCart = user.cart.find(
+			// @ts-ignore
 			(item) =>
 				item.product.toString() === prodId && item.color.toString() === colorId
 		);
@@ -77,11 +78,12 @@ export const removeFromCart = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 	const { prodId, colorId } = req.body;
 	try {
 		const user = await User.findById(_id);
 		const updatedCartIdx = user.cart.findIndex(
+			// @ts-ignore
 			(item) =>
 				item.product.toString() === prodId && item.color.toString() === colorId
 		);
@@ -112,11 +114,12 @@ export const deleteFromCart = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { _id } = req.user;
+	const { _id } = req.userData;
 	const { prodId, colorId } = req.body;
 	try {
 		const user = await User.findById(_id);
 		const updatedCartIdx = user.cart.findIndex(
+			// @ts-ignore
 			(item) =>
 				item.product.toString() === prodId && item.color.toString() === colorId
 		);

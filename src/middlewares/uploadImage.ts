@@ -1,13 +1,13 @@
-import multer, { Multer } from "multer";
+import multer, { FileFilterCallback, Multer } from "multer";
 import sharp from "sharp";
 import path from "path";
 import fs from "fs";
 import { NextFunction, Request, Response } from "express";
 
 const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
+	destination: function (_req, _file, cb) {
 		const imagesPath = path.join(__dirname, "../public/images/");
-		fs.stat(imagesPath, (err, stats) => {
+		fs.stat(imagesPath, (err, _stats) => {
 			if (err) {
 				if (err.code === "ENOENT") {
 					// Thư mục không tồn tại, tạo mới
@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 		});
 		cb(null, path.join(__dirname, "../public/images/"));
 	},
-	filename: function (req, file, cb) {
+	filename: function (_req, file, cb) {
 		const uniquesuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
 		const fileExt = file.originalname.split(".")[1];
 		cb(null, file.fieldname + "-" + uniquesuffix + ".jpeg");
@@ -35,11 +35,15 @@ const storage = multer.diskStorage({
 	},
 });
 
-const multerFilter = (req: Request, file: Express.Multer.File, cb) => {
+const multerFilter = (
+	_req: Request,
+	file: Express.Multer.File,
+	cb: FileFilterCallback
+) => {
 	if (file.mimetype.startsWith("image")) {
 		cb(null, true);
 	} else {
-		cb({ message: "Unsupported file format" }, false);
+		cb(new Error("Unsupported file format"));
 	}
 };
 
@@ -51,7 +55,7 @@ export const uploadPhoto = multer({
 
 export const productImgResize = async (
 	req: Request,
-	res: Response,
+	_res: Response,
 	next: NextFunction
 ) => {
 	if (!req.files) return next();
@@ -75,7 +79,7 @@ export const productImgResize = async (
 
 export const blogImgResize = async (
 	req: Request,
-	res: Response,
+	_res: Response,
 	next: NextFunction
 ) => {
 	if (!req.files) return next();

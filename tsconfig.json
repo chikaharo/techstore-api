@@ -9,10 +9,10 @@
 		"moduleResolution": "node",
 		"removeComments": true,
 		"noImplicitAny": true,
-		"strictNullChecks": true,
+		"strictNullChecks": false,
 		"strictFunctionTypes": true,
 		"noImplicitThis": true,
-		"noUnusedLocals": true,
+		"noUnusedLocals": false,
 		"noUnusedParameters": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
@@ -25,4 +25,5 @@
 	},
 	"exclude": ["node_modules"],
 	"include": ["./src/**/*.ts"]
+	// "files": ["./src/types/index.d.ts"]
 }

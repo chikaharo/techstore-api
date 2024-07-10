@@ -86,7 +86,7 @@ export const getCategory = async (
 };
 
 export const getallCategory = async (
-	req: Request,
+	_req: Request,
 	res: Response,
 	next: NextFunction
 ) => {

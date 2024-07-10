@@ -82,7 +82,7 @@ export const getBrand = async (
 };
 
 export const getallBrand = async (
-	req: Request,
+	_req: Request,
 	res: Response,
 	next: NextFunction
 ) => {

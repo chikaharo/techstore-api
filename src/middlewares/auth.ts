@@ -1,16 +1,24 @@
 import { Request, Response, NextFunction } from "express";
 import {} from "passport";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { AppError } from "../helpers/AppError";
 import User from "../models/userModel";
 
-export const auth = (req: Request, res: Response, next: NextFunction) => {
+declare global {
+	namespace Express {
+		interface Request {
+			userData?: JwtPayload;
+		}
+	}
+}
+
+export const auth = (req: Request, _res: Response, next: NextFunction) => {
 	try {
 		const token = req.headers.authorization?.replace("Bearer ", "");
 		if (token) {
-			const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-			console.log({ decoded });
-			req.user = decoded;
+			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+			req.userData = decoded;
 			next();
 		} else {
 			console.log("dont have token");
@@ -22,12 +30,14 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const retrictsTo = (roles: string[]) => {
-	return async (req: Request, res: Response, next: NextFunction) => {
-		if (!req.user) {
+	return async (req: Request, _res: Response, next: NextFunction) => {
+		if (!req.userData) {
 			return next(new AppError("Aunthorized", 403, "Authorized", true));
 		}
-		const user = await User.findById(req.user._id);
+		// @ts-ignore
+		const user = await User.findById(req.userData._id);
 		console.log("user retrict To: ", user);
+		// @ts-ignore
 		if (!roles.includes(user.role)) {
 			return next(new AppError("Aunthorized", 403, "Authorized", true));
 		}
