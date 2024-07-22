@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import {} from "passport";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { AppError } from "../helpers/AppError";
 import User from "../models/userModel";
