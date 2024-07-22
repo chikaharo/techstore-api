@@ -28,8 +28,11 @@ const app = express();
 app.use(helmet());
 app.use(
 	cors({
+		origin:
+			process.env.NODE_ENV === "production"
+				? process.env.CORS_ORIGIN_PROD
+				: process.env.CORS_ORIGIN_DEV,
 		credentials: true,
-		origin: true,
 	})
 );
 app.use(bodyParser.json());
