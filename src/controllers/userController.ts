@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/userModel";
 import { sendEmail } from "../helpers/sendMail";
-import passport from "passport";
 import { generateRefreshToken, generateToken } from "../helpers/jwtToken";
 import jwt from "jsonwebtoken";
 import { AppError } from "../helpers/AppError";
