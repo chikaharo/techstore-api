@@ -146,8 +146,8 @@ export const login = async (req: Request, res: Response) => {
 	);
 	res.cookie("refreshToken", refreshToken, {
 		httpOnly: true,
-		secure: process.env.NODE_ENV === "production" ? true : false, // gán bằng true sau khi deploy
-		sameSite: "strict",
+		secure: process.env.NODE_ENV === "production", // gán bằng true sau khi deploy
+		sameSite: "none",
 		maxAge: 72 * 60 * 60 * 1000,
 	});
 

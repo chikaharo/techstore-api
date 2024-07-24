@@ -23,8 +23,8 @@ const router = express.Router();
 
 router.post(
 	"/",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/product/create"),
 	createProduct
 );
@@ -43,12 +43,17 @@ router.put("/rating", auth, rating);
 
 router.put(
 	"/:id",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/product/update"),
 	updateProduct
 );
-router.delete("/:id", auth, retrictsTo(["admin"]), deleteProduct);
+router.delete(
+	"/:id",
+	// auth,
+	// retrictsTo(["admin"]),
+	deleteProduct
+);
 
 router.get("/", getAllProduct);
 
