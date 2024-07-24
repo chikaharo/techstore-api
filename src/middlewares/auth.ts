@@ -14,9 +14,11 @@ declare global {
 export const auth = (req: Request, _res: Response, next: NextFunction) => {
 	try {
 		const token = req.headers.authorization?.replace("Bearer ", "");
+
+		console.log({ token });
 		if (token) {
 			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-
+			console.log({ decoded });
 			req.userData = decoded;
 			next();
 		} else {
@@ -24,6 +26,7 @@ export const auth = (req: Request, _res: Response, next: NextFunction) => {
 			next(new AppError("Dont have token", 401, "Authorization", true));
 		}
 	} catch (err) {
+		console.log("check auth failed: ", err);
 		next(new AppError("Authentification Failed", 401, "Authorization", true));
 	}
 };

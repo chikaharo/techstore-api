@@ -15,18 +15,23 @@ router.get("/", getallCategory);
 router.get("/:id", getCategory);
 router.post(
 	"/",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/category/create"),
 	createCategory
 );
 router.put(
 	"/:id",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/category/update"),
 	updateCategory
 );
-router.delete("/:id", auth, retrictsTo(["admin"]), deleteCategory);
+router.delete(
+	"/:id",
+	// auth,
+	// retrictsTo(["admin"]),
+	deleteCategory
+);
 
 export default router;

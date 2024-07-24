@@ -15,15 +15,15 @@ router.get("/", getallColor);
 router.get("/:id", getColor);
 router.post(
 	"/",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/color/create"),
 	createColor
 );
 router.put(
 	"/:id",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/color/update"),
 	updateColor
 );

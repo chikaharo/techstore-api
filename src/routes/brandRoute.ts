@@ -15,18 +15,23 @@ router.get("/", getallBrand);
 router.get("/:id", getBrand);
 router.post(
 	"/",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/brand/create"),
 	createBrand
 );
 router.put(
 	"/:id",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	schemaValidator("/brand/update"),
 	updateBrand
 );
-router.delete("/:id", auth, retrictsTo(["admin"]), deleteBrand);
+router.delete(
+	"/:id",
+	// auth,
+	// retrictsTo(["admin"]),
+	deleteBrand
+);
 
 export default router;

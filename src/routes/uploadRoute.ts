@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.post(
 	"/",
-	auth,
-	retrictsTo(["admin"]),
+	// auth,
+	// retrictsTo(["admin"]),
 	uploadPhoto.array("images", 10),
 	uploadImages
 );
