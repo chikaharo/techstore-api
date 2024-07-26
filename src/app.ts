@@ -6,6 +6,7 @@ dotenv.config();
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoSanitize from "express-mongo-sanitize";
+import helmet from "helmet";
 
 import UserRouter from "./routes/userRoute";
 import CategoryRouter from "./routes/categoryRoute";
@@ -22,7 +23,6 @@ import {
 	logError,
 	isOperationalError,
 } from "./middlewares/errorHandler";
-import helmet from "helmet";
 
 const app = express();
 app.use(helmet());

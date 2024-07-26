@@ -3,3 +3,4 @@ node_modules
 logs
 github
 dist
+src/config/connectRedis.ts

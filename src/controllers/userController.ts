@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import User from "../models/userModel";
 import { sendEmail } from "../helpers/sendMail";
 import { generateRefreshToken, generateToken } from "../helpers/jwtToken";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { AppError } from "../helpers/AppError";
 
 export const createUser = async (
@@ -113,30 +113,15 @@ export const login = async (req: Request, res: Response) => {
 	if (!findUser) {
 		return res.status(404).json("Email not found");
 	}
-	// if (role !== findUser.role) {
-	// 	return res.status(404).json(`Not Authorised, Please login as ${role}`);
-	// }
 	// @ts-ignore
 	const validPassword = await findUser.isPasswordMatched(password);
 	if (!validPassword) {
 		return res.status(404).json("Password is not correct");
 	}
 
-	// const refreshToken = generateRefreshToken(findUser?._id);
-	const refreshToken = jwt.sign(
-		{ _id: findUser._id },
-		process.env.JWT_SECRET as string,
-		{
-			expiresIn: "1d",
-		}
-	);
-	const accessToken = jwt.sign(
-		{ _id: findUser._id },
-		process.env.JWT_SECRET as string,
-		{
-			expiresIn: "3d",
-		}
-	);
+	const accessToken = await generateToken(findUser._id.toString());
+	const refreshToken = await generateRefreshToken(findUser._id.toString());
+	console.log({ accessToken, refreshToken });
 	await User.findByIdAndUpdate(
 		findUser.id,
 		{
@@ -195,6 +180,61 @@ export const logout = async (
 	} catch (error) {
 		return next(new AppError(error.message, 500, "Server Error", true));
 	}
+};
+
+export const handleRefreshToken = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const cookie = req.cookies;
+	if (!cookie?.refreshToken) {
+		return next(
+			new AppError("No Refresh Token in Cookies", 401, "Unauthorized", true)
+		);
+	}
+	const refreshToken = cookie.refreshToken;
+	const user = await User.findOne({ refreshToken });
+	if (!user)
+		return next(
+			new AppError("No Refresh Token in Stored", 401, "Unauthorized", true)
+		);
+
+	let newRefreshToken = user.refreshToken;
+	const decoded = jwt.verify(
+		refreshToken,
+		process.env.REFRESH_SECRET
+	) as JwtPayload;
+	console.log("decoded: ", decoded);
+	if (user.id !== decoded._id) {
+		return res.status(403).json("Refresh Token is not valid");
+	}
+	if (decoded.exp < Date.now()) {
+		return new AppError(
+			"Refresh token has exprired",
+			401,
+			"Unauthorized",
+			true
+		);
+	}
+
+	const accessToken = generateToken(decoded?._id);
+	newRefreshToken = generateRefreshToken(decoded?._id);
+
+	res.cookie("refreshToken", newRefreshToken, {
+		httpOnly: false,
+		secure: false, // gán bằng true sau khi deploy
+		sameSite: "strict",
+		maxAge: 72 * 60 * 60 * 1000,
+	});
+	await User.findByIdAndUpdate(
+		user.id,
+		{
+			refreshToken: newRefreshToken,
+		},
+		{ new: true }
+	);
+	return res.status(200).json({ accessToken });
 };
 
 export const getallUser = async (
