@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -6,6 +6,7 @@ dotenv.config();
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoSanitize from "express-mongo-sanitize";
+import helmet from "helmet";
 
 import UserRouter from "./routes/userRoute";
 import CategoryRouter from "./routes/categoryRoute";
@@ -15,14 +16,13 @@ import ProductRouter from "./routes/productRoute";
 import UploadRouter from "./routes/uploadRoute";
 import PaymentRouter from "./routes/paymentRoute";
 import OrderRouter from "./routes/orderRoute";
-import { connectToDb } from "./config/connectDb";
+import { connectToDb, mongodbUrl } from "./config/connectDb";
 import {
 	notFound,
 	errorHandler,
 	logError,
 	isOperationalError,
 } from "./middlewares/errorHandler";
-import helmet from "helmet";
 
 const app = express();
 app.use(helmet());
@@ -45,7 +45,8 @@ app.use(
 		secret: process.env.SECRET as string,
 		resave: false,
 		saveUninitialized: false,
-		store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL }),
+		// store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL }),
+		store: MongoStore.create({ mongoUrl: mongodbUrl }),
 		cookie: {
 			maxAge: 1000 * 60 * 60, //one hour
 			httpOnly: true,

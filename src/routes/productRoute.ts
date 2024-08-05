@@ -36,7 +36,7 @@ router.get("/by-id/:id", getaProduct);
 
 router.put("/add-cart", auth, addToCart);
 router.put("/remove-cart", auth, removeFromCart);
-router.put("/delete-cart", auth, deleteFromCart);
+router.delete("/cart/:id", auth, deleteFromCart);
 
 router.put("/wishlist", auth, addToWishlist);
 router.put("/rating", auth, rating);

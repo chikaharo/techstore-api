@@ -42,8 +42,11 @@ export const addToCart = async (
 	const { _id } = req.userData;
 	const { prodId, colorId } = req.body;
 
+	console.log({ prodId, colorId });
+
 	try {
 		const product = await Product.findById(prodId);
+		console.log({ product });
 		if (product.quantity < 1) {
 			return next(
 				new AppError("Can't add more this product", 400, "Not Allowed", true)
@@ -55,6 +58,8 @@ export const addToCart = async (
 			(item) =>
 				item.product.toString() === prodId && item.color.toString() === colorId
 		);
+
+		console.log({ existingProdInCart });
 		if (existingProdInCart) {
 			existingProdInCart.quantity++;
 			await user.save();
@@ -115,13 +120,12 @@ export const deleteFromCart = async (
 	next: NextFunction
 ) => {
 	const { _id } = req.userData;
-	const { prodId, colorId } = req.body;
+	const { id } = req.params;
+
 	try {
 		const user = await User.findById(_id);
 		const updatedCartIdx = user.cart.findIndex(
-			// @ts-ignore
-			(item) =>
-				item.product.toString() === prodId && item.color.toString() === colorId
+			(item) => item._id.toString() === id
 		);
 		if (updatedCartIdx === -1) {
 			return next(new AppError("Product not in cart", 400, "Not Found", true));
@@ -129,7 +133,10 @@ export const deleteFromCart = async (
 			user.cart.splice(updatedCartIdx, 1);
 			await user.save();
 		}
-		return res.json(user);
+		return res.json({
+			status: "success",
+			message: "Delete from cart successfully",
+		});
 	} catch (error) {
 		console.log("[addToCart_ERROR]:", error);
 		return next(new AppError(error.message, 500, "Server Error", true));

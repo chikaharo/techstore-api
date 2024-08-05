@@ -5,6 +5,7 @@ import {
 	getallUser,
 	getMe,
 	getWishlist,
+	handleRefreshToken,
 	login,
 	logout,
 	sendOTP,
@@ -18,11 +19,11 @@ router.post("/register", schemaValidator("/user/register"), createUser);
 router.post("/send-otp", sendOTP);
 router.post("/login/password", schemaValidator("/user/login"), login);
 router.post("/logout", logout);
-// router.post("/admin-login", login);
 router.post("/verify-otp", verifyOTP);
 
 router.get("/all-users", auth, retrictsTo(["admin"]), getallUser);
 router.get("/me", auth, getMe);
+router.post("/token", handleRefreshToken);
 
 router.get("/wishlist", auth, getWishlist);
 

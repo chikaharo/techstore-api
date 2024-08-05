@@ -15,7 +15,6 @@ export const auth = (req: Request, _res: Response, next: NextFunction) => {
 	try {
 		const token = req.headers.authorization?.replace("Bearer ", "");
 
-		console.log({ token });
 		if (token) {
 			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 			console.log({ decoded });
@@ -23,25 +22,25 @@ export const auth = (req: Request, _res: Response, next: NextFunction) => {
 			next();
 		} else {
 			console.log("dont have token");
-			next(new AppError("Dont have token", 401, "Authorization", true));
+			next(new AppError("Dont have token", 401, "Unauthorized", true));
 		}
 	} catch (err) {
 		console.log("check auth failed: ", err);
-		next(new AppError("Authentification Failed", 401, "Authorization", true));
+		next(new AppError("Authentification Failed", 401, "Unauthorized", true));
 	}
 };
 
 export const retrictsTo = (roles: string[]) => {
 	return async (req: Request, _res: Response, next: NextFunction) => {
 		if (!req.userData) {
-			return next(new AppError("Aunthorized", 403, "Authorized", true));
+			return next(new AppError("Aunthorized", 403, "Unauthorized", true));
 		}
 		// @ts-ignore
 		const user = await User.findById(req.userData._id);
 		console.log("user retrict To: ", user);
 		// @ts-ignore
 		if (!roles.includes(user.role)) {
-			return next(new AppError("Aunthorized", 403, "Authorized", true));
+			return next(new AppError("Aunthorized", 403, "Unauthorized", true));
 		}
 		next();
 	};

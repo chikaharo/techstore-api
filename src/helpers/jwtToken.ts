@@ -1,17 +1,35 @@
 import jwt from "jsonwebtoken";
+import { resolve } from "path";
+import { AppError } from "./AppError";
 
-export const generateToken = (id: string) => {
-	console.log("generate token id: ", id);
-	return jwt.sign({ id }, process.env.JWT_SECRET as string, {
-		expiresIn: "1d",
+export const generateToken = async (id: string) => {
+	return new Promise((resolve, reject) => {
+		jwt.sign(
+			{ _id: id },
+			process.env.JWT_SECRET,
+			{
+				expiresIn: "1d",
+			},
+			(err, token) => {
+				if (err) reject(err);
+				resolve(token);
+			}
+		);
 	});
 };
 
-export const generateRefreshToken = (id: string) => {
-	console.log("generate refresh token id: ", id);
-	return jwt.sign({ id }, process.env.JWT_SECRET as string, {
-		expiresIn: "3d",
+export const generateRefreshToken = async (id: string) => {
+	return new Promise((resolve, reject) => {
+		jwt.sign(
+			{ _id: id },
+			process.env.JWT_REFRESH_SECRET,
+			{
+				expiresIn: "1d",
+			},
+			(err, token) => {
+				if (err) reject(err);
+				resolve(token);
+			}
+		);
 	});
 };
-
-module.exports = { generateRefreshToken };
