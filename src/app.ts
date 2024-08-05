@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -16,7 +16,7 @@ import ProductRouter from "./routes/productRoute";
 import UploadRouter from "./routes/uploadRoute";
 import PaymentRouter from "./routes/paymentRoute";
 import OrderRouter from "./routes/orderRoute";
-import { connectToDb } from "./config/connectDb";
+import { connectToDb, mongodbUrl } from "./config/connectDb";
 import {
 	notFound,
 	errorHandler,
@@ -45,7 +45,8 @@ app.use(
 		secret: process.env.SECRET as string,
 		resave: false,
 		saveUninitialized: false,
-		store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL }),
+		// store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL }),
+		store: MongoStore.create({ mongoUrl: mongodbUrl }),
 		cookie: {
 			maxAge: 1000 * 60 * 60, //one hour
 			httpOnly: true,

@@ -114,8 +114,8 @@ export const validatePayment = async (req: Request, res: Response) => {
 
 		//---------------------logic------------------------------
 
-		return res.redirect("http://localhost:3000/cart/payment/success");
+		return res.redirect(`${process.env.FRONTEND_URL}/cart/payment/success`);
 	} catch (e) {
-		return res.redirect("http://localhost:3000/cart/payment/failed");
+		return res.redirect(`${process.env.FRONTEND_URL}/cart/payment/failed`);
 	}
 };
